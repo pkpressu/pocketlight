@@ -1,0 +1,1 @@
+import{processPixels}from'./engine.js';self.onmessage=({data:m})=>{try{processPixels(m.pixels,m.w,m.h,m.settings);self.postMessage({...m},[m.pixels.buffer]);}catch(e){self.postMessage({id:m.id,error:e.message});}};

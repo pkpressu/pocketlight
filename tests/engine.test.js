@@ -1,0 +1,5 @@
+import test from'node:test';import assert from'node:assert/strict';import{defaults,processPixels,cropRect}from'../engine.js';
+test('neutral settings preserve pixels including alpha',()=>{const d=new Uint8ClampedArray([15,120,240,255,90,70,20,128]);assert.deepEqual(processPixels(d.slice(),2,1,defaults()),d);});
+test('one stop exposure doubles neutral RGB',()=>{const d=new Uint8ClampedArray([30,40,50,255]);assert.deepEqual([...processPixels(d,1,1,{...defaults(),exposure:1})],[60,80,100,255]);});
+test('monochrome removes chroma without altering alpha',()=>{const d=processPixels(new Uint8ClampedArray([20,100,220,200]),1,1,{...defaults(),saturation:-100});assert.equal(d[0],d[1]);assert.equal(d[1],d[2]);assert.equal(d[3],200);});
+test('crop positions reach edges and keep rectangle in bounds',()=>{for(const x of[0,50,100])for(const y of[0,50,100]){const r=cropRect(1600,1100,{...defaults(),crop:.3,cropX:x,cropY:y});assert(r.x>=0&&r.y>=0&&r.x+r.w<=1600&&r.y+r.h<=1100);}assert.deepEqual(cropRect(100,80,{...defaults(),crop:.5,cropX:100,cropY:0}),{x:50,y:0,w:50,h:40});});
